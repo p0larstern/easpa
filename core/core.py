@@ -3,7 +3,7 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
 """
-range constants TBD for each input
+range constants TBD for each variable
 cfp_lo =
 cfp_hi =
 rec_lo =
@@ -23,3 +23,23 @@ wtp = ctrl.Antecedent(np.arrange(wtp_lo, wtp_hi, 1), 'waste_treated_in_prod')
 
 psi = ctrl.Consequent(np.arrange(psi_lo, psi_hi, 1), 'score')
 
+
+#cfp[] = fuzz.trimf(cfp.universe, [])
+cfp['low'] = fuzz.trimf(cfp.universe, [])
+cfp['mdm'] = fuzz.trimf(cfp.universe, [])
+cfp['high'] = fuzz.trimf(cfp.universe, [])
+
+#rec[] = fuzz.trimf(rec.universe, [])
+rec['low'] = fuzz.trimf(rec.universe, [])
+rec['mdm'] = fuzz.trimf(rec.universe, [])
+rec['high'] = fuzz.trimf(rec.universe, [])
+
+#bdg[] = fuzz.trimf(bdg.universe, [])
+bdg['low'] = fuzz.trimf(bdg.universe, [])
+bdg['mdm'] = fuzz.trimf(bdg.universe, [])
+bdg['high'] = fuzz.trimf(bdg.universe, [])
+
+#wtp[] = fuzz.trimf(wtp.universe, [])
+wtp['low'] = fuzz.trimf(wtp.universe, [])
+wtp['mdm'] = fuzz.trimf(wtp.universe, [])
+wtp['high'] = fuzz.trimf(wtp.universe, [])
