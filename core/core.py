@@ -17,35 +17,35 @@ class generator(object):
         self.psi_hi = 100
 
     def set_variables(self):
-        self.cfp = ctrl.Antecedent(np.arrange(self.cfp_lo, self.cfp_hi, 1), 'carbon_footprint')
-        self.rec = ctrl.Antecedent(np.arrange(self.rec_lo, self.rec_hi, 1), 'recyclablilty')
-        self.bdg = ctrl.Antecedent(np.arrange(self.bdg_lo, self.bdg_hi, 1), 'biodegradability')
-        self.wtp = ctrl.Antecedent(np.arrange(self.wtp_lo, self.stp_hi, 1), 'waste_treated_in_prod')
+        self.cfp = ctrl.Antecedent(np.arange(self.cfp_lo, self.cfp_hi, 1), 'carbon_footprint')
+        self.rec = ctrl.Antecedent(np.arange(self.rec_lo, self.rec_hi, 1), 'recyclablilty')
+        self.bdg = ctrl.Antecedent(np.arange(self.bdg_lo, self.bdg_hi, 1), 'biodegradability')
+        self.wtp = ctrl.Antecedent(np.arange(self.wtp_lo, self.wtp_hi, 1), 'waste_treated_in_prod')
 
-        self.psi = ctrl.Consequent(np.arrange(self.psi_lo, self.psi_hi, 1), 'score')
+        self.psi = ctrl.Consequent(np.arange(self.psi_lo, self.psi_hi, 1), 'score')
 
         # L = low, M = medium, H = high
         #cfp[] = fuzz.trimf(cfp.universe, [])
-        cm = __mp(self.cfp_lo, self.cfp_hi)
+        cm = self.__mp(self.cfp_lo, self.cfp_hi)
         self.cfp['L'] = fuzz.trimf(self.cfp.universe, [self.cfp_lo, self.cfp_lo, cm])
         self.cfp['M'] = fuzz.trimf(self.cfp.universe, [self.cfp_lo, cm, self.cfp_hi])
         self.cfp['H'] = fuzz.trimf(self.cfp.universe, [cm, self.cfp_hi, self.cfp_hi])
 
         #rec[] = fuzz.trimf(rec.universe, [])
-        rm = __mp(self.rec_lo, self.rec_hi)
+        rm = self.__mp(self.rec_lo, self.rec_hi)
         self.rec['L'] = fuzz.trimf(self.rec.universe, [self.rec_lo, self.rec_lo, rm])
         self.rec['M'] = fuzz.trimf(self.rec.universe, [self.rec_lo, rm, self.rec_hi])
         self.rec['H'] = fuzz.trimf(self.rec.universe, [rm, self.rec_hi, self.rec_hi])
 
         #bdg[] = fuzz.trimf(bdg.universe, [])
-        bm = __mp(self.bdg_lo, self.bdg_hi)
+        bm = self.__mp(self.bdg_lo, self.bdg_hi)
         self.bdg['L'] = fuzz.trimf(self.bdg.universe, [self.bdg_lo, self.bdg_lo, bm])
         self.bdg['M'] = fuzz.trimf(self.bdg.universe, [self.bdg_lo, bm, self.bdg_hi])
         self.bdg['H'] = fuzz.trimf(self.bdg.universe, [bm, self.bdg_hi, self.bdg_hi])
 
         #wtp[] = fuzz.trimf(wtp.universe, [])
-        wm = __mp(self.wtp_lo, self.wtp_hi)
-        self.stp['L'] = fuzz.trimf(self.wtp.universe, [self.wtp_lo, self.wtp_lo, wm])
+        wm = self.__mp(self.wtp_lo, self.wtp_hi)
+        self.wtp['L'] = fuzz.trimf(self.wtp.universe, [self.wtp_lo, self.wtp_lo, wm])
         self.wtp['M'] = fuzz.trimf(self.wtp.universe, [self.wtp_lo, wm, self.wtp_hi])
         self.wtp['H'] = fuzz.trimf(self.wtp.universe, [wm, self.wtp_hi, self.wtp_hi])
 
@@ -143,7 +143,7 @@ class generator(object):
         self.rules[79] = ctrl.Rule(self.rec['L'] & self.bdg['L'] & self.wtp['L'] & self.cfp['M'], self.psi['B'])
         self.rules[80] = ctrl.Rule(self.rec['L'] & self.bdg['L'] & self.wtp['L'] & self.cfp['L'], self.psi['B'])
 
-    def setup(self):
+    def start(self):
         print("Starting PSI generator.")
         print("Initialising linguistic variables.", end=" ")
         self.set_variables()
@@ -167,7 +167,7 @@ class generator(object):
 
         self.gen.compute()
 
-        return gen.output['score']
+        return self.gen.output['score']
 
     @staticmethod
     def __mp(l, r):
