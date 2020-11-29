@@ -4,7 +4,7 @@ from skfuzzy import control as ctrl
 
 class generator(object):
 
-    def __init__(self, cl, ch, rl, rh, bl, bh, wl, wh, pl, ph):
+    def __init__(self, cl, ch, rl, rh, bl, bh, wl, wh):
         self.cfp_lo = cl
         self.cfp_hi = ch
         self.rec_lo = rl
@@ -13,8 +13,8 @@ class generator(object):
         self.bdg_hi = bh
         self.wtp_lo = wl
         self.wtp_hi = wh
-        self.psi_lo = pl
-        self.psi_hi = ph
+        self.psi_lo = 0
+        self.psi_hi = 100
 
     def set_variables(self):
         self.cfp = ctrl.Antecedent(np.arrange(self.cfp_lo, self.cfp_hi, 1), 'carbon_footprint')
@@ -26,32 +26,36 @@ class generator(object):
 
         # L = low, M = medium, H = high
         #cfp[] = fuzz.trimf(cfp.universe, [])
-        self.cfp['L'] = fuzz.trimf(self.cfp.universe, [self.cfp_lo, self.cfp_lo, ])
-        self.cfp['M'] = fuzz.trimf(self.cfp.universe, [self.cfp_lo, , self.cfp_hi])
-        self.cfp['H'] = fuzz.trimf(self.cfp.universe, [, self.cfp_hi, self.cfp_hi])
+        cm = __mp(self.cfp_lo, self.cfp_hi)
+        self.cfp['L'] = fuzz.trimf(self.cfp.universe, [self.cfp_lo, self.cfp_lo, cm])
+        self.cfp['M'] = fuzz.trimf(self.cfp.universe, [self.cfp_lo, cm, self.cfp_hi])
+        self.cfp['H'] = fuzz.trimf(self.cfp.universe, [cm, self.cfp_hi, self.cfp_hi])
 
         #rec[] = fuzz.trimf(rec.universe, [])
-        self.rec['L'] = fuzz.trimf(self.rec.universe, [self.rec_lo, self.rec_lo, ])
-        self.rec['M'] = fuzz.trimf(self.rec.universe, [self.rec_lo, , self.rec_hi])
-        self.rec['H'] = fuzz.trimf(self.rec.universe, [ , self.rec_hi, self.rec_hi])
+        rm = __mp(self.rec_lo, self.rec_hi)
+        self.rec['L'] = fuzz.trimf(self.rec.universe, [self.rec_lo, self.rec_lo, rm])
+        self.rec['M'] = fuzz.trimf(self.rec.universe, [self.rec_lo, rm, self.rec_hi])
+        self.rec['H'] = fuzz.trimf(self.rec.universe, [rm, self.rec_hi, self.rec_hi])
 
         #bdg[] = fuzz.trimf(bdg.universe, [])
-        self.bdg['L'] = fuzz.trimf(self.bdg.universe, [self.bdg_lo, self.bdg_lo, ])
-        self.bdg['M'] = fuzz.trimf(self.bdg.universe, [self.bdg_lo, , self.bdg_hi])
-        self.bdg['H'] = fuzz.trimf(self.bdg.universe, [ , self.bdg_hi, self.bdg_hi])
+        bm = __mp(self.bdg_lo, self.bdg_hi)
+        self.bdg['L'] = fuzz.trimf(self.bdg.universe, [self.bdg_lo, self.bdg_lo, bm])
+        self.bdg['M'] = fuzz.trimf(self.bdg.universe, [self.bdg_lo, bm, self.bdg_hi])
+        self.bdg['H'] = fuzz.trimf(self.bdg.universe, [bm, self.bdg_hi, self.bdg_hi])
 
         #wtp[] = fuzz.trimf(wtp.universe, [])
-        self.stp['L'] = fuzz.trimf(self.wtp.universe, [self.wtp_lo, self.wtp_lo, ])
-        self.wtp['M'] = fuzz.trimf(self.wtp.universe, [self.wtp_lo, , self.wtp_hi])
-        self.wtp['H'] = fuzz.trimf(self.wtp.universe, [ , self.wtp_hi, self.wtp_hi])
+        wm = __mp(self.wtp_lo, self.wtp_hi)
+        self.stp['L'] = fuzz.trimf(self.wtp.universe, [self.wtp_lo, self.wtp_lo, wm])
+        self.wtp['M'] = fuzz.trimf(self.wtp.universe, [self.wtp_lo, wm, self.wtp_hi])
+        self.wtp['H'] = fuzz.trimf(self.wtp.universe, [wm, self.wtp_hi, self.wtp_hi])
 
         # B = bad, P = poor,  A = average, G = good, E = excellent
         #psi[] = fuzz.trapmf(psi.universe, [])
-        self.psi['B'] = fuzz.trapmf(self.psi.universe, [])
-        self.psi['P'] = fuzz.trapmf(self.psi.universe, [])
-        self.psi['A'] = fuzz.trapmf(self.psi.universe, [])
-        self.psi['G'] = fuzz.trapmf(self.psi.universe, [])
-        self.psi['E'] = fuzz.trapmf(self.psi.universe, [])
+        self.psi['B'] = fuzz.trapmf(self.psi.universe, [0, 0, 20, 30])
+        self.psi['P'] = fuzz.trapmf(self.psi.universe, [10, 20, 40, 50])
+        self.psi['A'] = fuzz.trapmf(self.psi.universe, [30, 40, 60, 70])
+        self.psi['G'] = fuzz.trapmf(self.psi.universe, [50, 60, 80, 90])
+        self.psi['E'] = fuzz.trapmf(self.psi.universe, [70, 80, 100, 100])
 
     def set_rulebase(self):
         #Rule Base
@@ -154,3 +158,18 @@ class generator(object):
         self.gen = ctrl.ControlSystemSimulation(self.control)
         print("Finished.")
         print("Generator started.")
+
+    def get_psi(self, c, r, b, w):
+        self.gen.input['carbon_footprint'] = c
+        self.gen.input['recyclablilty'] = r
+        self.gen.input['biodegradability'] = b
+        self.gen.input['waste_treated_in_prod'] = w
+
+        self.gen.compute()
+
+        return gen.output['score']
+
+    @staticmethod
+    def __mp(l, r):
+        m = l + (r-l)//2
+        return m
