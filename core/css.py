@@ -24,7 +24,7 @@ def get_css(old_css, avg_psi, ord_cnt, cur_psi):
     # overflow the limit of float
     x1 = cur_psi * y1
     x2 = ord_cnt * y1
-    x2 *= avg_psi
+    x2 *= avg_psi * 10
 
     new_css = float(old_css + x1 + x2)
     new_css = round(new_css, 2)
