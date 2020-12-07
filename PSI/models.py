@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
 
 class Customer(models.Model):
     user = models. OneToOneField(User,on_delete=models.CASCADE, null=True, blank=True, )
@@ -13,7 +14,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200, null=True)
     price = models.FloatField()
     image = models.ImageField(null=True, blank=True)
-    pss = models.FloatField(null=True, blank=True)
+    pss = models.FloatField(default=0,null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -26,13 +27,25 @@ class Product(models.Model):
             url = ''
         return url
 
+class Unprocessed_item(models.Model):
+    name = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True,blank=True)
+    packaging_name = models.CharField(max_length=200,null=True)
+    carbon_footprint = models.FloatField(default=0, null=True, blank=True)
+    biodegradability = models.FloatField( default=0, null=True, blank=True)
+    recyclability = models.FloatField(default=0, null=True, blank=True)
+    waste_treated = models.FloatField(default=0, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
 
 
 class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True,blank=True)
-    date_ordered = models.DateTimeField(auto_now_add=True)
+    date_ordered = models.DateTimeField(auto_now_add=True, auto_now=False)
     complete = models.BooleanField(default=False ,null=True)
     transaction_id = models.CharField(max_length=100, null=True)
+    Average_PSS = models.FloatField(default=0, null=True, blank=True)
 
     def __str__(self):
         return str(self.id)
@@ -57,8 +70,14 @@ class Order(models.Model):
     @property
     def get_cart_PSS(self):
         orderitems = self.orderitem_set.all()
-        total = sum([item.get_totalPSS for item in orderitems])
+        try:
+            A = sum([item.get_totalPSS for item in orderitems])
+            B = sum([item.quantity for item in orderitems])
+            total = A / B
+        except:
+            total = 0
         return total
+
 
 
 class OrderItem(models.Model):
