@@ -1,3 +1,12 @@
+# Create your views here.
+from django.shortcuts import render
+from django.http import JsonResponse
+import json
+import datetime
+
+from .models import *
+
+
 def store(request):
 
 	if request.user.is_authenticated:
@@ -76,6 +85,9 @@ def processOrder(request):
 		order, created = Order.objects.get_or_create(customer=customer, complete=False)
 		total = float(data['form']['total'])
 		order.transaction_id = transaction_id
+		Cart_PSS = order.get_cart_PSS
+		order.Average_PSS = Cart_PSS
+		order.save()
 
 		if total == order.get_cart_total:
 			order.complete = True
@@ -95,4 +107,7 @@ def processOrder(request):
 	else:
 		print('User is not logged in..')
 	return JsonResponse('Payment complete!', safe= False)
+
+
+
 
