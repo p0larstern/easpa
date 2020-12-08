@@ -19,7 +19,7 @@ def store(request):
 		order = {'get_cart_total': 0, 'get_cart_items': 0, 'get_cart_PSS': 0, 'shipping':True}
 		cartItems = order['get_cart_items']
 
-	products = Product.objects.all()
+	products = Product.objects.filter(listed='y')
 	context = {'products':products, 'cartItems':cartItems}
 	return render(request, 'store/store.html', context)
 
@@ -36,7 +36,6 @@ def cart(request):
 		cartItems = order['get_cart_items']
 	context = {'items' :items, 'order' :order,'cartItems':cartItems }
 	return render(request, 'store/cart.html', context)
-
 
 def checkout(request):
 	if request.user.is_authenticated:
@@ -107,6 +106,7 @@ def processOrder(request):
 	else:
 		print('User is not logged in..')
 	return JsonResponse('Payment complete!', safe= False)
+
 
 
 
