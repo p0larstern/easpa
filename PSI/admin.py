@@ -32,7 +32,7 @@ class ProductAdmin(admin.ModelAdmin):
             item.pss = g.get_psi(
                 item.carbon_footprint,
                 item.recyclability,
-                item.biodegradability,
+                item.water_used,
                 item.waste_treated
             )
             item.listed = 'y'
