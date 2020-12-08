@@ -20,7 +20,7 @@ class Product(models.Model):
     price = models.FloatField()
     image = models.ImageField(null=True, blank=True)
     pss = models.FloatField(default=0,null=True, blank=True)
-    listed = models.CharField(max_length=1, choices=LISTED_CHOICES)
+    listed = models.CharField(default='n',max_length=1, choices=LISTED_CHOICES)
     packaging_name = models.CharField(max_length=200,null=True)
     carbon_footprint = models.FloatField(default=0, null=True, blank=True)
     biodegradability = models.FloatField( default=0, null=True, blank=True)
@@ -79,7 +79,7 @@ class Order(models.Model):
         orderitems = self.orderitem_set.all()
         try:
             A = sum([item.get_totalPSS for item in orderitems])
-            B = sum([item.quantity for item in orderitems])
+            B = len(orderitems)
             total = A / B
         except:
             total = 0
@@ -132,3 +132,4 @@ class ShippingAddress(models.Model):
 
 
 # Create your models here.
+
