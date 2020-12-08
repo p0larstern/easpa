@@ -1,5 +1,6 @@
 from django.contrib import admin
-
+from PSI.models import Product
+from PSI.core import core
 # Register your models here.
 from .models import *
 
@@ -18,6 +19,29 @@ class ShippingAddressAdmin(admin.ModelAdmin):
 admin.site.register(ShippingAddress,ShippingAddressAdmin)
 admin.site.register(Unprocessed_item)
 
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name','pss','listed')
 
+    def list_items(self, request, queryset):
+        g = core.generator(0,100,0,100,0,100,0,100)
+        g.start()
 
+        q1 = queryset.filter(listed='n')
+        for item in q1:
+            item.pss = g.get_psi(
+                item.carbon_footprint,
+                item.recyclability,
+                item.biodegradability
+                item.waste_treated
+            )
+            item.listed = 'y'
+            item.save()
+
+        self.message_user(request, ngettext(
+            '%d product was successfully marked as listed.',
+            '%d stories were successfully marked as listed.',
+            q1,
+        ) % q1, messages.SUCCESS)
+
+    list_items.short_description = "List unlisted items"
 

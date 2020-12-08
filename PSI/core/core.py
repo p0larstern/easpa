@@ -167,7 +167,7 @@ class generator(object):
 
         self.gen.compute()
 
-        return self.gen.output['score']
+        return round(self.gen.output['score'],2)
 
     @staticmethod
     def __mp(l, r):

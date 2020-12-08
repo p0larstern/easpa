@@ -2,6 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 
+LISTED_CHOICES = [
+    ('y', 'Yes'),
+    ('n', 'No'),
+]
+
 class Customer(models.Model):
     user = models. OneToOneField(User,on_delete=models.CASCADE, null=True, blank=True, )
     name = models.CharField(max_length=200, null=True)
@@ -15,6 +20,12 @@ class Product(models.Model):
     price = models.FloatField()
     image = models.ImageField(null=True, blank=True)
     pss = models.FloatField(default=0,null=True, blank=True)
+    listed = models.CharField(max_length=1, choices=LISTED_CHOICES)
+    packaging_name = models.CharField(max_length=200,null=True)
+    carbon_footprint = models.FloatField(default=0, null=True, blank=True)
+    biodegradability = models.FloatField( default=0, null=True, blank=True)
+    recyclability = models.FloatField(default=0, null=True, blank=True)
+    waste_treated = models.FloatField(default=0, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -27,17 +38,13 @@ class Product(models.Model):
             url = ''
         return url
 
+"""
 class Unprocessed_item(models.Model):
     name = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True,blank=True)
-    packaging_name = models.CharField(max_length=200,null=True)
-    carbon_footprint = models.FloatField(default=0, null=True, blank=True)
-    biodegradability = models.FloatField( default=0, null=True, blank=True)
-    recyclability = models.FloatField(default=0, null=True, blank=True)
-    waste_treated = models.FloatField(default=0, null=True, blank=True)
 
     def __str__(self):
         return self.name
-
+"""
 
 
 class Order(models.Model):
