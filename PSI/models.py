@@ -11,9 +11,14 @@ class Customer(models.Model):
     user = models. OneToOneField(User,on_delete=models.CASCADE, null=True, blank=True, )
     name = models.CharField(max_length=200, null=True)
     email = models.CharField(max_length=200, null=True)
+    css = models.FloatField(default=0,null=False)
 
     def __str__(self):
         return self.name
+
+    @property
+    def get_css(self):
+        return self.css
 
 class Product(models.Model):
     name = models.CharField(max_length=200, null=True)
@@ -23,7 +28,7 @@ class Product(models.Model):
     listed = models.CharField(default='n',max_length=1, choices=LISTED_CHOICES)
     packaging_name = models.CharField(max_length=200,null=True)
     carbon_footprint = models.FloatField(default=0, null=True, blank=True)
-    water_used = models.FloatField( default=0, null=True, blank=True)
+    biodegradability = models.FloatField( default=0, null=True, blank=True)
     recyclability = models.FloatField(default=0, null=True, blank=True)
     waste_treated = models.FloatField(default=0, null=True, blank=True)
 
@@ -53,9 +58,10 @@ class Order(models.Model):
     complete = models.BooleanField(default=False ,null=True)
     transaction_id = models.CharField(max_length=100, null=True)
     Average_PSS = models.FloatField(default=0, null=True, blank=True)
+    used = models.BooleanField(default=False, null=True)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.customer)
 
     @property
     def shipping(self):
@@ -84,6 +90,10 @@ class Order(models.Model):
         except:
             total = 0
         return total
+
+    @property
+    def get_cust_CSS(self):
+        return self.customer.css
 
 
 
