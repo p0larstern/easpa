@@ -52,7 +52,7 @@ admin.site.register(ShippingAddress,ShippingAddressAdmin)
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name','pss','listed')
-    actions = ['list_items']
+    actions = ['list_items', 'unlist_items']
 
     def list_items(self, request, queryset):
         g = core.generator(0,15,0,50,0,2,0,10)
@@ -77,6 +77,14 @@ class ProductAdmin(admin.ModelAdmin):
         ) % q1, messages.SUCCESS)
         """
 
+    def unlist_items(self, request, queryset):
+        for item in queryset:
+            item.listed = 'n'
+            item.pss = 0
+            item.save()
+
     list_items.short_description = "List unlisted items"
+    unlist_items.short_description = "Unlist selected items"
+
 admin.site.register(Product,ProductAdmin)
 
