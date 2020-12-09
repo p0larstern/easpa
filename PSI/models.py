@@ -28,7 +28,7 @@ class Product(models.Model):
     listed = models.CharField(default='n',max_length=1, choices=LISTED_CHOICES)
     packaging_name = models.CharField(max_length=200,null=True)
     carbon_footprint = models.FloatField(default=0, null=True, blank=True)
-    biodegradability = models.FloatField( default=0, null=True, blank=True)
+    water_used = models.FloatField( default=0, null=True, blank=True)
     recyclability = models.FloatField(default=0, null=True, blank=True)
     energy = models.FloatField(default=0, null=True, blank=True)
 
