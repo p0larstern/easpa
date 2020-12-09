@@ -30,7 +30,7 @@ class Product(models.Model):
     carbon_footprint = models.FloatField(default=0, null=True, blank=True)
     biodegradability = models.FloatField( default=0, null=True, blank=True)
     recyclability = models.FloatField(default=0, null=True, blank=True)
-    waste_treated = models.FloatField(default=0, null=True, blank=True)
+    energy = models.FloatField(default=0, null=True, blank=True)
 
     def __str__(self):
         return self.name

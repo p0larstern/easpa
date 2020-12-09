@@ -55,7 +55,7 @@ class ProductAdmin(admin.ModelAdmin):
     actions = ['list_items']
 
     def list_items(self, request, queryset):
-        g = core.generator(0,100,0,100,0,100,0,100)
+        g = core.generator(0,15,0,50,0,2,0,10)
         g.start()
 
         q1 = queryset.filter(listed='n')
@@ -64,7 +64,7 @@ class ProductAdmin(admin.ModelAdmin):
                 item.carbon_footprint,
                 item.recyclability,
                 item.biodegradability,
-                item.waste_treated
+                item.energy
             )
             item.listed = 'y'
             item.save()
