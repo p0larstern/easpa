@@ -16,15 +16,13 @@ from fractions import Fraction as f
 
 def get_css(old_css, avg_psi, ord_cnt, cur_psi):
 
-    cur_psi *= 10 #<=100 --> <=1000
-
     y1 = f(1, ord_cnt+1)
     # average is calculated this way so
     # that we do not lose accuracy, or 
     # overflow the limit of float
     x1 = cur_psi * y1
     x2 = ord_cnt * y1
-    x2 *= avg_psi * 10
+    x2 *= avg_psi
 
     new_css = float(old_css + x1 + x2)
     new_css = round(new_css, 2)
