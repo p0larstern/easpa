@@ -10,13 +10,18 @@
 				<hr>
 
 				<button data-product="{{product.id}}" data-action="add"   class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
-				<a class="btn btn-outline-success" href="#">View</a>
-				<h4 style="display: inline-block; float: right"><strong>Rs{{product.price|floatformat:2}}</strong></h4>
+<!--				<a class="btn btn-outline-success" href="#">View</a>-->
+				<h4 style="display: inline-block; float: right"><strong>Rs {{product.price|floatformat:2}}</strong></h4><br>
+
+
+				<br><h6 style="display:inline-block;float: inline-start "><strong>CO2% : </strong>{{product.carbon_footprint}}</h6><br>
+				<h6 style="display:inline-block;float: inline-start "><strong>Amount of water used : </strong>{{product.water_used}}</h6><br>
+				<h6 style="display:inline-block;float: inline-start "><strong>Recyclability : </strong>{{product.recyclability}}</h6><br>
+				<h6 style="display:inline-block;float: inline-start "><strong>Waste Treated : </strong>{{product.waste_treated}}</h6><br>
 
 			</div>
 		</div>
 		{% endfor %}
 	</div>
-
 
 {% endblock content %}
